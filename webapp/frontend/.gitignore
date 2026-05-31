@@ -1,0 +1,47 @@
+# Игнорировать всё, кроме самого .gitignore и папки webapp
+/*
+*/ 
+!.gitignore
+!webapp/
+
+# Правила для папки webapp
+webapp/
+
+# Но внутри webapp игнорировать всё, что перечислено ниже
+webapp/*
+
+# Python (бэкенд)
+**/__pycache__/
+**/*.py[cod]
+**/*$py.class
+**/.venv/
+**/venv/
+**/env/
+**/ENV/
+**/Pipfile.lock
+**/poetry.lock
+
+# Виртуальное окружение (конкретно ваше)
+webapp/backend/.venv/
+webapp/backend/venv/
+
+# Node.js (фронтенд)
+**/node_modules/
+**/npm-debug.log
+**/yarn-debug.log
+**/yarn-error.log
+
+# Папка node_modules фронтенда
+webapp/frontend/node_modules/
+
+# Локальные файлы окружения
+**/.env
+**/.env.local
+**/.env.*.local
+
+# IDE
+**/.vscode/
+**/.idea/
+**/*.swp
+**/*.swo
+**/.DS_Store
