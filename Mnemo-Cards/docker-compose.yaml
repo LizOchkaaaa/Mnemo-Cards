@@ -1,0 +1,61 @@
+networks:
+  dev:
+
+services:
+  nginx:
+    image: nginx:stable-alpine
+    ports:
+      - "80:80"
+      - "8443:443"
+    volumes:
+      - './nginx.conf:/etc/nginx/nginx.conf'
+      - '/etc/letsencrypt:/etc/letsencrypt'
+    depends_on:
+      - backend
+      - frontend
+    networks:
+      - dev
+    
+
+  backend:
+    build:
+      context: ./backend
+    env_file:
+      - ./backend/.env
+    environment:
+      - DATABASE_URL=postgresql://liza:steef124@db:5432/MnemoCards
+      - UVICORN_WORKERS=4
+      - DECOMPOSER_MODEL_DIR=/app/models/decomposer_multilingual
+    volumes:
+      - ./frontend/public/avatars:/app/frontend/public/avatars:ro
+      - ./scripts/models/decomposer_multilingual:/app/models/decomposer_multilingual:ro
+    networks:
+      - dev
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db 
+
+  frontend:
+    build:
+      context: ./frontend
+    environment:
+      - PYTHON_API_URL=http://backend:8000
+    networks:
+      - dev
+
+  db:
+    image: postgres:15
+    environment:
+      - POSTGRES_USER=liza
+      - POSTGRES_PASSWORD=steef124
+      - POSTGRES_DB=MnemoCards
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    networks:
+      - dev
+      
+volumes:
+  postgres_data:
